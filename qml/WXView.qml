@@ -55,10 +55,19 @@ Item {
     Process {                                                                      
         id: processObj                                                             
         program: "notify-send"                                                     
-    }
+	}
+
+
+	HeadImg {
+		id: head
+		onFilePathChanged: {
+			console.log(head.filePath)
+		}
+	}
 
     GetMsg {
-        id: getMsgObj
+		id: getMsgObj
+
         onSyncKeyChanged: {
             if (getMsgObj.syncKey.length == 0) {
                 processObj.arguments = [qsTr("WeChat Qt frontend"), qsTr("Disconnected! Please login again"), '-i', '/usr/share/icons/hicolor/64x64/apps/qwx.png', '-t', '13000'];
@@ -75,15 +84,16 @@ Item {
         onNewMsg: {
             var isExist = false;
             var nickName = "";
+			var userName = "";
             var headImgUrl = "";
             
             rootWindow.title = qsTr("WeChat Qt frontend") + " - " + qsTr("New message");
             for (var i = 0; i < wxListModel.count; i++) {
-                var userName = wxListModel.get(i).wxUserName;
+				userName = wxListModel.get(i).wxUserName;
                 nickName = contactObj.getNickName(userName);
                 if (userName == fromUserName || userName == toUserName) {
                     isExist = true;
-                    wxListModel.get(i).wxContent = getMsgObj.contentWithoutUserName(content);
+					wxListModel.get(i).wxContent = getMsgObj.contentWithoutUserName(content);
                     wxListModel.move(i, 0, 1);
                     break;
                 }
@@ -91,22 +101,26 @@ Item {
 
             if (isExist == false) {
                 if (Global.loginUserName == fromUserName) {
-                    nickName = contactObj.getNickName(toUserName);
+					nickName = contactObj.getNickName(toUserName);
                     headImgUrl = contactObj.getHeadImgUrl(toUserName);
                     wxListModel.insert(0, {"wxUserName": toUserName, 
                                            "wxNickName": nickName, 
                                            "wxHeadImgUrl": headImgUrl});
                 } else {
-                    nickName = contactObj.getNickName(fromUserName);
-                    headImgUrl = contactObj.getHeadImgUrl(fromUserName);
+					nickName = contactObj.getNickName(fromUserName);
+					headImgUrl = contactObj.getHeadImgUrl(fromUserName);
                     wxListModel.insert(0, {"wxUserName": fromUserName, 
                                            "wxNickName": nickName, 
                                            "wxHeadImgUrl": headImgUrl});
                 }
             }
 
+			head.userName = getMsgObj.contentToUserName(content, userName);
+
             if (nickName != "") {
-                processObj.arguments = [nickName, content, '-i', '/usr/share/icons/hicolor/64x64/apps/qwx.png', '-t', '3000'];
+//                processObj.arguments = [nickName, content, '-i', '/usr/share/icons/hicolor/64x64/apps/qwx.png', '-t', '3000'];
+				console.log(nickName, content, head.userName , head.filePath);
+				processObj.arguments = [nickName, content, '-i', head.filePath , '-t', '3000'];
                 processObj.start();
             }
 

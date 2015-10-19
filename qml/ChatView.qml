@@ -81,6 +81,7 @@ Rectangle {
 			}
 			var newContent = getMsgObj.contentWithoutUserName(content)
 			var newUserName = getMsgObj.contentToUserName(content, userName)
+//			console.log(content, newContent, newUserName)
 			chatListModel.append({
 									 content: newContent,
 									 curUserName: newUserName
@@ -156,7 +157,9 @@ Rectangle {
 				x: curUserName
 				   !== fromUserName ? Global.styles.navbar.horizontalMargin : parent.x
 									  + parent.width - Global.styles.navbar.horizontalMargin - width
-				anchors.verticalCenter: parent.verticalCenter
+//				anchors.verticalCenter: parent.verticalCenter
+				anchors.top: parent.top
+				anchors.topMargin: 6
 			}
 
 			Text {
@@ -269,6 +272,7 @@ Rectangle {
 	}
 
 	function sendMsg() {
+		emotionGridView.visible = false
 		if (sendMsgTextField.text == "") {
 			return
 		}
@@ -431,7 +435,6 @@ Rectangle {
 				anchors.right: parent.right
 				anchors.verticalCenter: parent.verticalCenter
 				onClicked: {
-					emotionGridView.visible = false
 					sendMsg()
 				}
 			}

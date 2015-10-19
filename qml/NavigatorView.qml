@@ -150,14 +150,21 @@ Item {
 					frameOverlap: 1
 					tab: Rectangle {
 						color: "white"
-						implicitWidth: navigatorStackView.width / 3
+						implicitWidth: (navigatorStackView.width+2) / 3
 						implicitHeight: 60
+
+						Rectangle {
+							anchors.top: parent.top
+							width: parent.width
+							height: 1
+							color: "#dadada"
+						}
 
 						CircleImage {
 							id: iconImage
 							anchors.horizontalCenter: parent.horizontalCenter
 							anchors.top: parent.top
-							anchors.topMargin: 3
+							anchors.topMargin: 8
 							imageSource: navigatorTabView.getTab(
 											 styleData.index).iconSource
 							width: 30
