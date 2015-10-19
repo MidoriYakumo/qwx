@@ -247,6 +247,7 @@ Rectangle {
 			anchors.rightMargin: 8
 			antialiasing: true
 			color: "white"
+			clip:true
 		}
 
 		CircleImage {
